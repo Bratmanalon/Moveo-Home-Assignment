@@ -14,7 +14,7 @@ app.use(express.static("public"));
 const rooms = [
     {
         name: "async",
-        code: '// create an async function.',
+        code: 'const obj = { hello: "name", num: 17 };\n// create an async function.',
         sockets: new Set(),
     },
     {
