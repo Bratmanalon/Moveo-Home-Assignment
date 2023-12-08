@@ -6,10 +6,16 @@ const editorDiv = document.querySelector('.editor');
 const countSpan = document.querySelector('.count');
 const roleSpan = document.querySelector('.role');
 const roomNameSpan = document.querySelector('.room-name');
+const toastMsgDiv = document.querySelector('.toast-msg');
 
 roomNameSpan.textContent = roomName + ' case';
 
 socket.emit("join-room", roomName);
+
+let solutionCode;
+socket.on("solution-is", (solution) => {
+    solutionCode = solution;
+})
 
 function observeInnerText(element, onChange) {
     const ob = new MutationObserver((mutationsList) => {
@@ -31,6 +37,9 @@ socket.on("role", (role) => {
             const cursorPosition = getCaretPosition(editorDiv);
             highlightEditor();
             setCaretPosition(editorDiv, cursorPosition);
+            if (editorDiv.textContent.trim() === solutionCode) {
+                toastMsgDiv.style.display = 'block'
+            }
         });
     }
 })
@@ -39,9 +48,14 @@ socket.on("visitors-count", (count) => {
     countSpan.textContent = count
 })
 
+// the student gets this only once (on landing in the page),
+// the mentor gets this on every change made by the student
 socket.on("code-changed", (code) => {
     editorDiv.textContent = code;
-    highlightEditor()
+    highlightEditor();
+    if (editorDiv.textContent.trim() === solutionCode) {
+        toastMsgDiv.style.display = 'block'
+    };
 })
 
 function highlightEditor() {

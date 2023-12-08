@@ -14,22 +14,30 @@ app.use(express.static("public"));
 const rooms = [
     {
         name: "async",
-        code: 'const obj = { hello: "name", num: 17 };\n// create an async function.',
+        initialCode: '// how does one spell async?',
+        code: null, // will be set dynamically
+        solution: 'async',
         sockets: new Set(),
     },
     {
         name: "functional",
-        code: '',
+        initialCode: '// will alon beat the newest member of the team?',
+        code: null, // will be set dynamically
+        solution: 'yes',
         sockets: new Set(),
     },
     {
         name: "loops",
-        code: '// loop five times.',
+        initialCode: '// loop five times.',
+        code: null, // will be set dynamically
+        solution: 'for (let i = 0; i < 5; i++)',
         sockets: new Set(),
     },
     {
         name: "classy",
-        code: '',
+        initialCode: '// write the word class',
+        code: null, // will be set dynamically
+        solution: 'class',
         sockets: new Set(),
     },
 ];
@@ -39,11 +47,15 @@ io.on("connection", (socket) => {
     socket.on("join-room", (roomName) => {
         const room = rooms.find((obj) => obj.name === roomName);
         if (!room) return;
+        if (room.sockets.size === 0) {
+            room.code = room.initialCode;
+        }
         socket.join(roomName);
         room.sockets.add(socket);
         socket.emit("role", room.sockets.size === 1 ? "mentor" : "student");
         io.to(roomName).emit("visitors-count", room.sockets.size);
         socket.emit("code-changed", room.code);
+        socket.emit("solution-is", room.solution);
     })
 
     socket.on("code-changed", (code) => {
