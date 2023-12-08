@@ -1,0 +1,35 @@
+html, body {
+    padding: 0;
+    margin: 0;
+}
+
+body {
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+nav {
+    display: flex;
+    justify-content: space-between;
+    background-color: grey;
+    padding-inline: 20px;
+    color: white;
+    align-items: center;
+    box-shadow: rgba(50, 50, 93, 0.25) 0px 13px 27px -5px, rgba(0, 0, 0, 0.3) 0px 8px 16px -8px;
+}
+
+.home-icon {
+    text-decoration: none;
+    color: white;
+}
+
+.room-name, .role {
+    text-transform: capitalize;
+}
+
+.editor {
+    flex: 1;
+    outline: none;
+    padding: 20px;
+}
